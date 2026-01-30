@@ -1,0 +1,24 @@
+{
+  "name": "Ruta de Cobro - Droguería Social",
+  "short_name": "Ruta Cobro",
+  "description": "Registro de rutas de cobro para asesores",
+  "start_url": "/ruta-cobro/",
+  "display": "standalone",
+  "background_color": "#1e3c72",
+  "theme_color": "#00b894",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
