@@ -3,633 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Ruta de Cobro - Sábados</title>
+    <title>Ruta de Cobro - Droguería Social</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icon-180x180.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ruta Cobro">
+    <meta name="theme-color" content="#4a1fa0">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
-            color: white;
-            padding: 25px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 1.5em;
-            margin-bottom: 5px;
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 0.9em;
-        }
-
-        .day-check {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 15px;
-            margin: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .form-content {
-            padding: 25px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2d3436;
-            font-size: 0.95em;
-        }
-
-        .form-group label .required {
-            color: #e74c3c;
-            margin-left: 3px;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #dfe6e9;
-            border-radius: 10px;
-            font-size: 1em;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: #00b894;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1);
-        }
-
-        .form-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .photo-upload {
-            position: relative;
-            border: 2px dashed #dfe6e9;
-            border-radius: 10px;
-            padding: 30px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-        }
-
-        .photo-upload:hover {
-            border-color: #00b894;
-            background: #f0fff4;
-        }
-
-        .photo-upload input[type="file"] {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .photo-upload .icon {
-            font-size: 3em;
-            margin-bottom: 10px;
-        }
-
-        .photo-upload p {
-            color: #636e72;
-            font-size: 0.9em;
-        }
-
-        .photo-preview {
-            max-width: 100%;
-            max-height: 200px;
-            border-radius: 10px;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .gps-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            font-size: 0.9em;
-        }
-
-        .gps-status.loading {
-            color: #f39c12;
-        }
-
-        .gps-status.success {
-            color: #27ae60;
-            background: #d5f4e6;
-        }
-
-        .gps-status.error {
-            color: #e74c3c;
-            background: #fdeaea;
-        }
-
-        .gps-icon {
-            font-size: 1.5em;
-        }
-
-        .gps-coords {
-            font-size: 0.85em;
-            color: #636e72;
-            margin-top: 5px;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 184, 148, 0.4);
-        }
-
-        .btn-submit:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .btn-gps {
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            margin-top: 10px;
-        }
-
-        .btn-gps:hover {
-            opacity: 0.9;
-        }
-
-        .hidden-data {
-            display: none;
-        }
-
-        .success-message {
-            display: none;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .success-message .checkmark {
-            font-size: 4em;
-            color: #00b894;
-            margin-bottom: 20px;
-        }
-
-        .success-message h2 {
-            color: #2d3436;
-            margin-bottom: 10px;
-        }
-
-        .success-message p {
-            color: #636e72;
-        }
-
-        .blocked-message {
-            display: none;
-            text-align: center;
-            padding: 40px;
-        }
-
-        .blocked-message .icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-        }
-
-        .blocked-message h2 {
-            color: #e74c3c;
-            margin-bottom: 10px;
-        }
-
-        .current-day {
-            font-weight: bold;
-            color: #2d3436;
-        }
-
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .loading-content {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #00b894;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 480px) {
-            body {
-                padding: 10px;
-            }
-            
-            .header h1 {
-                font-size: 1.3em;
-            }
-            
-            .form-content {
-                padding: 15px;
-            }
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); min-height: 100vh; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #4a1fa0 0%, #6b3fa0 100%); color: white; padding: 20px; text-align: center; }
+        .header img { width: 120px; height: 120px; border-radius: 15px; margin-bottom: 10px; }
+        .header h1 { font-size: 1.3em; margin-bottom: 5px; color: #ffd700; }
+        .header p { opacity: 0.9; font-size: 0.9em; }
+        .day-check { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 15px; margin: 20px; border-radius: 10px; text-align: center; }
+        .form-content { padding: 25px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #2d3436; font-size: 0.95em; }
+        .form-group label .required { color: #e74c3c; margin-left: 3px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px 15px; border: 2px solid #dfe6e9; border-radius: 10px; font-size: 1em; }
+        .form-group input:focus, .form-group textarea:focus { border-color: #6b3fa0; outline: none; }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+        .photo-upload { position: relative; border: 2px dashed #dfe6e9; border-radius: 10px; padding: 30px; text-align: center; cursor: pointer; background: #f8f9fa; }
+        .photo-upload input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .photo-upload .icon { font-size: 3em; margin-bottom: 10px; }
+        .photo-upload p { color: #636e72; font-size: 0.9em; }
+        .photo-preview { max-width: 100%; max-height: 200px; border-radius: 10px; margin-top: 10px; display: none; }
+        .gps-status { display: flex; align-items: center; gap: 10px; padding: 12px 15px; background: #f8f9fa; border-radius: 10px; font-size: 0.9em; }
+        .gps-status.loading { color: #f39c12; }
+        .gps-status.success { color: #27ae60; background: #d5f4e6; }
+        .gps-status.error { color: #e74c3c; background: #fdeaea; }
+        .gps-coords { font-size: 0.85em; color: #636e72; margin-top: 5px; }
+        .btn-submit { width: 100%; padding: 15px; background: linear-gradient(135deg, #4a1fa0 0%, #6b3fa0 100%); color: #ffd700; border: none; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin-top: 10px; }
+        .btn-submit:disabled { background: #bdc3c7; cursor: not-allowed; }
+        .btn-gps { background: linear-gradient(135deg, #ffd700 0%, #ffb800 100%); color: #4a1fa0; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; }
+        .success-message { display: none; text-align: center; padding: 40px; }
+        .success-message .checkmark { font-size: 4em; color: #27ae60; margin-bottom: 20px; }
+        .blocked-message { display: none; text-align: center; padding: 40px; }
+        .blocked-message .icon { font-size: 4em; margin-bottom: 20px; }
+        .blocked-message h2 { color: #e74c3c; margin-bottom: 10px; }
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 1000; }
+        .loading-content { background: white; padding: 40px; border-radius: 20px; text-align: center; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #6b3fa0; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
-    <!-- Loading overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-content">
-            <div class="spinner"></div>
-            <p>Enviando registro...</p>
-        </div>
-    </div>
-
+    <div class="loading-overlay" id="loadingOverlay"><div class="loading-content"><div class="spinner"></div><p>Enviando registro...</p></div></div>
     <div class="container">
         <div class="header">
-            <h1>📋 Registro Ruta de Cobro</h1>
+            <img src="icon-192x192.png" alt="Ruta de Cobro">
+            <h1>RUTA DE COBRO</h1>
             <p>Droguería Social - Solo Sábados</p>
         </div>
-
-        <!-- Mensaje cuando NO es sábado -->
         <div class="blocked-message" id="blockedMessage">
             <div class="icon">🚫</div>
             <h2>Formulario no disponible</h2>
             <p>Este formulario solo está habilitado los días <strong>SÁBADOS</strong>.</p>
-            <p style="margin-top: 15px;">Hoy es: <span class="current-day" id="currentDay"></span></p>
-            <p style="margin-top: 10px; color: #636e72; font-size: 0.9em;">Por favor regresa el próximo sábado para registrar tu ruta de cobro.</p>
+            <p style="margin-top: 15px;">Hoy es: <span id="currentDay"></span></p>
         </div>
-
-        <!-- Formulario (solo visible los sábados) -->
         <div id="formSection" style="display: none;">
-            <div class="day-check" id="dayCheck">
-                ✅ Es sábado - Formulario habilitado
-            </div>
-
+            <div class="day-check">✅ Formulario habilitado</div>
             <form id="rutaCobroForm" class="form-content">
-                <!-- Nombre del Asesor -->
-                <div class="form-group">
-                    <label>Nombre del Asesor <span class="required">*</span></label>
-                    <input type="text" id="asesor" name="asesor" required 
-                           placeholder="Tu nombre completo">
-                </div>
-
-                <!-- Empresa -->
-                <div class="form-group">
-                    <label>Empresa / Cliente <span class="required">*</span></label>
-                    <input type="text" id="empresa" name="empresa" required 
-                           placeholder="Nombre de la empresa visitada">
-                </div>
-
-                <!-- Foto -->
-                <div class="form-group">
-                    <label>Foto de evidencia <span class="required">*</span></label>
-                    <div class="photo-upload" id="photoUpload">
-                        <div class="icon">📷</div>
-                        <p>Toca aquí para tomar foto o seleccionar imagen</p>
-                        <input type="file" id="foto" name="foto" accept="image/*" capture="environment" required>
-                    </div>
-                    <img id="photoPreview" class="photo-preview" alt="Vista previa">
-                    <p id="photoStatus" style="font-size: 0.8em; color: #636e72; margin-top: 5px;"></p>
-                </div>
-
-                <!-- Observación -->
-                <div class="form-group">
-                    <label>Observación <span class="required">*</span></label>
-                    <textarea id="observacion" name="observacion" required
-                              placeholder="Describe la visita, acuerdos, compromisos de pago, etc."></textarea>
-                </div>
-
-                <!-- Hora (manual del asesor) -->
-                <div class="form-group">
-                    <label>Hora de visita <span class="required">*</span></label>
-                    <input type="time" id="horaVisita" name="horaVisita" required>
-                </div>
-
-                <!-- Fecha (manual del asesor) -->
-                <div class="form-group">
-                    <label>Fecha de visita <span class="required">*</span></label>
-                    <input type="date" id="fechaVisita" name="fechaVisita" required>
-                </div>
-
-                <!-- Contacto cliente -->
-                <div class="form-group">
-                    <label>Contacto del cliente <span class="required">*</span></label>
-                    <input type="tel" id="contacto" name="contacto" required
-                           placeholder="Teléfono o nombre de contacto">
-                </div>
-
-                <!-- Ubicación GPS -->
-                <div class="form-group">
-                    <label>📍 Ubicación GPS <span class="required">*</span></label>
-                    <div class="gps-status loading" id="gpsStatus">
-                        <span class="gps-icon">🔄</span>
-                        <span>Obteniendo ubicación...</span>
-                    </div>
-                    <div class="gps-coords" id="gpsCoords"></div>
-                    <button type="button" class="btn-gps" onclick="obtenerUbicacion()">
-                        🔄 Actualizar ubicación
-                    </button>
-                </div>
-
-                <button type="submit" class="btn-submit" id="btnSubmit">
-                    ✅ Enviar Registro
-                </button>
+                <div class="form-group"><label>Nombre del Asesor <span class="required">*</span></label><input type="text" id="asesor" required placeholder="Tu nombre completo"></div>
+                <div class="form-group"><label>Empresa / Cliente <span class="required">*</span></label><input type="text" id="empresa" required placeholder="Nombre de la empresa"></div>
+                <div class="form-group"><label>Foto de evidencia <span class="required">*</span></label><div class="photo-upload"><div class="icon">📷</div><p>Toca para tomar foto</p><input type="file" id="foto" accept="image/*" capture="environment" required></div><img id="photoPreview" class="photo-preview"><p id="photoStatus" style="font-size:0.8em;color:#636e72;margin-top:5px;"></p></div>
+                <div class="form-group"><label>Observación <span class="required">*</span></label><textarea id="observacion" required placeholder="Describe la visita"></textarea></div>
+                <div class="form-group"><label>Hora de visita <span class="required">*</span></label><input type="time" id="horaVisita" required></div>
+                <div class="form-group"><label>Fecha de visita <span class="required">*</span></label><input type="date" id="fechaVisita" required></div>
+                <div class="form-group"><label>Contacto del cliente <span class="required">*</span></label><input type="tel" id="contacto" required placeholder="Teléfono"></div>
+                <div class="form-group"><label>📍 Ubicación GPS <span class="required">*</span></label><div class="gps-status loading" id="gpsStatus"><span>🔄</span><span>Obteniendo ubicación...</span></div><div class="gps-coords" id="gpsCoords"></div><button type="button" class="btn-gps" onclick="obtenerUbicacion()">🔄 Actualizar</button></div>
+                <button type="submit" class="btn-submit" id="btnSubmit">✅ Enviar Registro</button>
             </form>
         </div>
-
-        <!-- Mensaje de éxito -->
-        <div class="success-message" id="successMessage">
-            <div class="checkmark">✅</div>
-            <h2>¡Registro Enviado!</h2>
-            <p>Tu ruta de cobro ha sido registrada correctamente en el sistema.</p>
-            <button class="btn-submit" style="margin-top: 20px;" onclick="nuevoRegistro()">
-                ➕ Nuevo Registro
-            </button>
-        </div>
+        <div class="success-message" id="successMessage"><div class="checkmark">✅</div><h2>¡Registro Enviado!</h2><p>Tu ruta de cobro ha sido registrada.</p><button class="btn-submit" style="margin-top:20px;" onclick="nuevoRegistro()">➕ Nuevo Registro</button></div>
     </div>
-
     <script>
-        // ============================================================
-        // ⚠️ CONFIGURACIÓN - PEGAR AQUÍ TU URL DE GOOGLE APPS SCRIPT
-        // ============================================================
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwPYu83wOV9C52xVO4yw-po4dGIwmb2v39FH1SJPloZ4-h6zBzJdluujFq6k0rlc6Rz/exec';
-        // ============================================================
-
-        // Variables globales
-        let ubicacionObtenida = false;
-        let latitud = '';
-        let longitud = '';
-        let precisionGPS = '';
-        let fotoBase64 = '';
-
-        // Verificar si es sábado (6 = sábado en JavaScript)
+        let ubicacionObtenida = false, latitud = '', longitud = '', precisionGPS = '', fotoBase64 = '';
         function verificarDia() {
-            const hoy = new Date();
-            const diaSemana = hoy.getDay();
+            const hoy = new Date(), diaSemana = hoy.getDay();
             const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-            
             document.getElementById('currentDay').textContent = dias[diaSemana] + ', ' + hoy.toLocaleDateString('es-CO');
-
-            // ⚠️ CAMBIAR A: diaSemana === 6  PARA SOLO SÁBADOS
-            // Actualmente en modo prueba (siempre habilitado)
-            const esSabado = true; // Modo prueba - siempre habilitado
-            
-            if (esSabado) {
-                document.getElementById('formSection').style.display = 'block';
-                document.getElementById('blockedMessage').style.display = 'none';
-                inicializarFormulario();
-            } else {
-                document.getElementById('formSection').style.display = 'none';
-                document.getElementById('blockedMessage').style.display = 'block';
-            }
+            const esSabado = true;
+            if (esSabado) { document.getElementById('formSection').style.display = 'block'; document.getElementById('blockedMessage').style.display = 'none'; inicializarFormulario(); }
+            else { document.getElementById('formSection').style.display = 'none'; document.getElementById('blockedMessage').style.display = 'block'; }
         }
-
-        // Inicializar formulario
         function inicializarFormulario() {
             const hoy = new Date();
             document.getElementById('fechaVisita').value = hoy.toISOString().split('T')[0];
             document.getElementById('horaVisita').value = hoy.toTimeString().slice(0, 5);
             obtenerUbicacion();
         }
-
-        // Obtener ubicación GPS
         function obtenerUbicacion() {
-            const statusDiv = document.getElementById('gpsStatus');
-            const coordsDiv = document.getElementById('gpsCoords');
-            
+            const statusDiv = document.getElementById('gpsStatus'), coordsDiv = document.getElementById('gpsCoords');
             statusDiv.className = 'gps-status loading';
-            statusDiv.innerHTML = '<span class="gps-icon">🔄</span><span>Obteniendo ubicación...</span>';
-            
-            if (!navigator.geolocation) {
-                statusDiv.className = 'gps-status error';
-                statusDiv.innerHTML = '<span class="gps-icon">❌</span><span>GPS no soportado</span>';
-                return;
-            }
-
+            statusDiv.innerHTML = '<span>🔄</span><span>Obteniendo ubicación...</span>';
+            if (!navigator.geolocation) { statusDiv.className = 'gps-status error'; statusDiv.innerHTML = '<span>❌</span><span>GPS no soportado</span>'; return; }
             navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    latitud = position.coords.latitude;
-                    longitud = position.coords.longitude;
-                    precisionGPS = position.coords.accuracy;
-                    
-                    statusDiv.className = 'gps-status success';
-                    statusDiv.innerHTML = '<span class="gps-icon">✅</span><span>Ubicación obtenida</span>';
-                    coordsDiv.innerHTML = `
-                        <strong>Lat:</strong> ${latitud.toFixed(6)} | <strong>Lon:</strong> ${longitud.toFixed(6)}<br>
-                        <a href="https://www.google.com/maps?q=${latitud},${longitud}" target="_blank" style="color: #3498db;">
-                            📍 Ver en Google Maps
-                        </a>
-                    `;
-                    ubicacionObtenida = true;
-                },
-                function(error) {
-                    statusDiv.className = 'gps-status error';
-                    let mensaje = 'Error obteniendo ubicación';
-                    if (error.code === error.PERMISSION_DENIED) {
-                        mensaje = 'Permiso denegado. Activa el GPS.';
-                    }
-                    statusDiv.innerHTML = `<span class="gps-icon">❌</span><span>${mensaje}</span>`;
-                    ubicacionObtenida = false;
-                },
+                function(pos) { latitud = pos.coords.latitude; longitud = pos.coords.longitude; precisionGPS = pos.coords.accuracy; statusDiv.className = 'gps-status success'; statusDiv.innerHTML = '<span>✅</span><span>Ubicación obtenida</span>'; coordsDiv.innerHTML = '<a href="https://www.google.com/maps?q='+latitud+','+longitud+'" target="_blank" style="color:#6b3fa0;">📍 Ver en Maps</a>'; ubicacionObtenida = true; },
+                function() { statusDiv.className = 'gps-status error'; statusDiv.innerHTML = '<span>❌</span><span>Error GPS</span>'; ubicacionObtenida = false; },
                 { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
             );
         }
-
-        // Preview y convertir foto a base64
         document.getElementById('foto').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
-                // Validar tamaño (máximo 5MB)
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('⚠️ La foto es muy grande. Máximo 5MB.');
-                    this.value = '';
-                    return;
-                }
-
+                if (file.size > 5*1024*1024) { alert('Foto muy grande. Máximo 5MB.'); this.value = ''; return; }
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById('photoPreview');
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    document.querySelector('.photo-upload .icon').textContent = '✅';
-                    document.querySelector('.photo-upload p').textContent = 'Foto seleccionada';
-                    
-                    // Guardar base64 (sin el prefijo data:image...)
-                    fotoBase64 = e.target.result;
-                    document.getElementById('photoStatus').textContent = 
-                        `Tamaño: ${(file.size / 1024).toFixed(1)} KB`;
-                }
+                reader.onload = function(e) { document.getElementById('photoPreview').src = e.target.result; document.getElementById('photoPreview').style.display = 'block'; document.querySelector('.photo-upload .icon').textContent = '✅'; document.querySelector('.photo-upload p').textContent = 'Foto lista'; fotoBase64 = e.target.result; document.getElementById('photoStatus').textContent = (file.size/1024).toFixed(1)+' KB'; }
                 reader.readAsDataURL(file);
             }
         });
-
-        // Enviar formulario
         document.getElementById('rutaCobroForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            
-            // Validaciones
-            if (!ubicacionObtenida) {
-                alert('⚠️ Debes permitir el acceso a tu ubicación GPS.');
-                obtenerUbicacion();
-                return;
-            }
-
-            if (!fotoBase64) {
-                alert('⚠️ Debes adjuntar una foto de evidencia.');
-                return;
-            }
-
-            if (GOOGLE_SCRIPT_URL === 'PEGAR_AQUI_TU_URL_DE_GOOGLE_APPS_SCRIPT') {
-                alert('⚠️ Falta configurar la URL de Google Apps Script.\n\nContacta al administrador.');
-                return;
-            }
-
-            // Mostrar loading
+            if (!ubicacionObtenida) { alert('Activa el GPS'); obtenerUbicacion(); return; }
+            if (!fotoBase64) { alert('Adjunta una foto'); return; }
             document.getElementById('loadingOverlay').style.display = 'flex';
             document.getElementById('btnSubmit').disabled = true;
-
-            // Timestamp real del envío
             const ahora = new Date();
-            
-            // Preparar datos
-            const datos = {
-                // Datos del asesor
-                asesor: document.getElementById('asesor').value,
-                empresa: document.getElementById('empresa').value,
-                observacion: document.getElementById('observacion').value,
-                horaReportada: document.getElementById('horaVisita').value,
-                fechaReportada: document.getElementById('fechaVisita').value,
-                contacto: document.getElementById('contacto').value,
-                
-                // Datos ocultos (verificación)
-                timestampReal: ahora.getTime(),
-                fechaReal: ahora.toLocaleDateString('es-CO'),
-                horaReal: ahora.toLocaleTimeString('es-CO'),
-                latitud: latitud.toString(),
-                longitud: longitud.toString(),
-                precisionGPS: precisionGPS.toString(),
-                linkMapa: `https://www.google.com/maps?q=${latitud},${longitud}`,
-                
-                // Foto en base64
-                foto: fotoBase64
-            };
-
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(datos)
-                });
-
-                // Con mode: 'no-cors' no podemos leer la respuesta, pero si llegó aquí, se envió
-                document.getElementById('loadingOverlay').style.display = 'none';
-                document.getElementById('formSection').style.display = 'none';
-                document.getElementById('successMessage').style.display = 'block';
-
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('loadingOverlay').style.display = 'none';
-                document.getElementById('btnSubmit').disabled = false;
-                alert('❌ Error al enviar. Verifica tu conexión a internet.');
-            }
+            const datos = { asesor: document.getElementById('asesor').value, empresa: document.getElementById('empresa').value, observacion: document.getElementById('observacion').value, horaReportada: document.getElementById('horaVisita').value, fechaReportada: document.getElementById('fechaVisita').value, contacto: document.getElementById('contacto').value, timestampReal: ahora.getTime(), fechaReal: ahora.toLocaleDateString('es-CO'), horaReal: ahora.toLocaleTimeString('es-CO'), latitud: latitud.toString(), longitud: longitud.toString(), precisionGPS: precisionGPS.toString(), linkMapa: 'https://www.google.com/maps?q='+latitud+','+longitud, foto: fotoBase64 };
+            try { await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); document.getElementById('loadingOverlay').style.display = 'none'; document.getElementById('formSection').style.display = 'none'; document.getElementById('successMessage').style.display = 'block'; }
+            catch (error) { document.getElementById('loadingOverlay').style.display = 'none'; document.getElementById('btnSubmit').disabled = false; alert('Error al enviar'); }
         });
-
-        // Nuevo registro
-        function nuevoRegistro() {
-            document.getElementById('rutaCobroForm').reset();
-            document.getElementById('photoPreview').style.display = 'none';
-            document.getElementById('photoStatus').textContent = '';
-            document.querySelector('.photo-upload .icon').textContent = '📷';
-            document.querySelector('.photo-upload p').textContent = 'Toca aquí para tomar foto o seleccionar imagen';
-            document.getElementById('successMessage').style.display = 'none';
-            document.getElementById('formSection').style.display = 'block';
-            document.getElementById('btnSubmit').disabled = false;
-            fotoBase64 = '';
-            inicializarFormulario();
-        }
-
-        // Iniciar
+        function nuevoRegistro() { document.getElementById('rutaCobroForm').reset(); document.getElementById('photoPreview').style.display = 'none'; document.getElementById('photoStatus').textContent = ''; document.querySelector('.photo-upload .icon').textContent = '📷'; document.querySelector('.photo-upload p').textContent = 'Toca para tomar foto'; document.getElementById('successMessage').style.display = 'none'; document.getElementById('formSection').style.display = 'block'; document.getElementById('btnSubmit').disabled = false; fotoBase64 = ''; inicializarFormulario(); }
         verificarDia();
     </script>
 </body>
