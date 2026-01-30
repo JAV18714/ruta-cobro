@@ -19,6 +19,7 @@
         .header img { width: 120px; height: 120px; border-radius: 15px; margin-bottom: 10px; }
         .header h1 { font-size: 1.3em; margin-bottom: 5px; color: #ffd700; }
         .header p { opacity: 0.9; font-size: 0.9em; }
+        .asesor-name { background: linear-gradient(135deg, #ffd700 0%, #ffb800 100%); color: #4a1fa0; padding: 12px; text-align: center; font-weight: 700; font-size: 1.1em; }
         .day-check { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 15px; margin: 20px; border-radius: 10px; text-align: center; }
         .form-content { padding: 25px; }
         .form-group { margin-bottom: 20px; }
@@ -27,6 +28,10 @@
         .form-group input, .form-group textarea { width: 100%; padding: 12px 15px; border: 2px solid #dfe6e9; border-radius: 10px; font-size: 1em; }
         .form-group input:focus, .form-group textarea:focus { border-color: #6b3fa0; outline: none; }
         .form-group textarea { min-height: 100px; resize: vertical; }
+        .form-group input:disabled { background: #e9ecef; color: #495057; cursor: not-allowed; }
+        .info-box { background: #e8f4fd; border: 1px solid #bee5eb; border-radius: 10px; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
+        .info-box .label { font-size: 0.85em; color: #636e72; }
+        .info-box .value { font-weight: 600; color: #2d3436; font-size: 1.1em; }
         .photo-upload { position: relative; border: 2px dashed #dfe6e9; border-radius: 10px; padding: 30px; text-align: center; cursor: pointer; background: #f8f9fa; }
         .photo-upload input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
         .photo-upload .icon { font-size: 3em; margin-bottom: 10px; }
@@ -47,6 +52,8 @@
         .loading-content { background: white; padding: 40px; border-radius: 20px; text-align: center; }
         .spinner { width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #6b3fa0; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .datetime-row { display: flex; gap: 10px; }
+        .datetime-row .info-box { flex: 1; }
     </style>
 </head>
 <body>
@@ -57,6 +64,7 @@
             <h1>RUTA DE COBRO</h1>
             <p>Droguería Social - Solo Sábados</p>
         </div>
+        <div class="asesor-name">👤 JHON CRISTOBAL AYALA MONTES</div>
         <div class="blocked-message" id="blockedMessage">
             <div class="icon">🚫</div>
             <h2>Formulario no disponible</h2>
@@ -66,12 +74,28 @@
         <div id="formSection" style="display: none;">
             <div class="day-check">✅ Formulario habilitado</div>
             <form id="rutaCobroForm" class="form-content">
-                <div class="form-group"><label>Nombre del Asesor <span class="required">*</span></label><input type="text" id="asesor" required placeholder="Tu nombre completo"></div>
+                <!-- Fecha y Hora automáticas (no editables) -->
+                <div class="form-group">
+                    <label>📅 Fecha y Hora del Registro</label>
+                    <div class="datetime-row">
+                        <div class="info-box">
+                            <div>
+                                <div class="label">Fecha</div>
+                                <div class="value" id="fechaDisplay">--</div>
+                            </div>
+                        </div>
+                        <div class="info-box">
+                            <div>
+                                <div class="label">Hora</div>
+                                <div class="value" id="horaDisplay">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="form-group"><label>Empresa / Cliente <span class="required">*</span></label><input type="text" id="empresa" required placeholder="Nombre de la empresa"></div>
                 <div class="form-group"><label>Foto de evidencia <span class="required">*</span></label><div class="photo-upload"><div class="icon">📷</div><p>Toca para tomar foto</p><input type="file" id="foto" accept="image/*" capture="environment" required></div><img id="photoPreview" class="photo-preview"><p id="photoStatus" style="font-size:0.8em;color:#636e72;margin-top:5px;"></p></div>
                 <div class="form-group"><label>Observación <span class="required">*</span></label><textarea id="observacion" required placeholder="Describe la visita"></textarea></div>
-                <div class="form-group"><label>Hora de visita <span class="required">*</span></label><input type="time" id="horaVisita" required></div>
-                <div class="form-group"><label>Fecha de visita <span class="required">*</span></label><input type="date" id="fechaVisita" required></div>
                 <div class="form-group"><label>Contacto del cliente <span class="required">*</span></label><input type="tel" id="contacto" required placeholder="Teléfono"></div>
                 <div class="form-group"><label>📍 Ubicación GPS <span class="required">*</span></label><div class="gps-status loading" id="gpsStatus"><span>🔄</span><span>Obteniendo ubicación...</span></div></div>
                 <button type="submit" class="btn-submit" id="btnSubmit">✅ Enviar Registro</button>
@@ -81,7 +105,15 @@
     </div>
     <script>
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwPYu83wOV9C52xVO4yw-po4dGIwmb2v39FH1SJPloZ4-h6zBzJdluujFq6k0rlc6Rz/exec';
+        const NOMBRE_ASESOR = 'JHON CRISTOBAL AYALA MONTES';
         let ubicacionObtenida = false, latitud = '', longitud = '', precisionGPS = '', fotoBase64 = '';
+        
+        function actualizarReloj() {
+            const ahora = new Date();
+            document.getElementById('fechaDisplay').textContent = ahora.toLocaleDateString('es-CO');
+            document.getElementById('horaDisplay').textContent = ahora.toLocaleTimeString('es-CO', {hour: '2-digit', minute: '2-digit', second: '2-digit'});
+        }
+        
         function verificarDia() {
             const hoy = new Date(), diaSemana = hoy.getDay();
             const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -90,12 +122,13 @@
             if (esSabado) { document.getElementById('formSection').style.display = 'block'; document.getElementById('blockedMessage').style.display = 'none'; inicializarFormulario(); }
             else { document.getElementById('formSection').style.display = 'none'; document.getElementById('blockedMessage').style.display = 'block'; }
         }
+        
         function inicializarFormulario() {
-            const hoy = new Date();
-            document.getElementById('fechaVisita').value = hoy.toISOString().split('T')[0];
-            document.getElementById('horaVisita').value = hoy.toTimeString().slice(0, 5);
+            actualizarReloj();
+            setInterval(actualizarReloj, 1000);
             obtenerUbicacion();
         }
+        
         function obtenerUbicacion() {
             const statusDiv = document.getElementById('gpsStatus');
             statusDiv.className = 'gps-status loading';
@@ -107,6 +140,7 @@
                 { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
             );
         }
+        
         document.getElementById('foto').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -116,6 +150,7 @@
                 reader.readAsDataURL(file);
             }
         });
+        
         document.getElementById('rutaCobroForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             if (!ubicacionObtenida) { alert('Debes activar el GPS para enviar el registro'); obtenerUbicacion(); return; }
@@ -123,10 +158,26 @@
             document.getElementById('loadingOverlay').style.display = 'flex';
             document.getElementById('btnSubmit').disabled = true;
             const ahora = new Date();
-            const datos = { asesor: document.getElementById('asesor').value, empresa: document.getElementById('empresa').value, observacion: document.getElementById('observacion').value, horaReportada: document.getElementById('horaVisita').value, fechaReportada: document.getElementById('fechaVisita').value, contacto: document.getElementById('contacto').value, timestampReal: ahora.getTime(), fechaReal: ahora.toLocaleDateString('es-CO'), horaReal: ahora.toLocaleTimeString('es-CO'), latitud: latitud.toString(), longitud: longitud.toString(), precisionGPS: precisionGPS.toString(), linkMapa: 'https://www.google.com/maps?q='+latitud+','+longitud, foto: fotoBase64 };
+            const datos = { 
+                asesor: NOMBRE_ASESOR, 
+                empresa: document.getElementById('empresa').value, 
+                observacion: document.getElementById('observacion').value, 
+                horaReportada: ahora.toLocaleTimeString('es-CO'), 
+                fechaReportada: ahora.toLocaleDateString('es-CO'), 
+                contacto: document.getElementById('contacto').value, 
+                timestampReal: ahora.getTime(), 
+                fechaReal: ahora.toLocaleDateString('es-CO'), 
+                horaReal: ahora.toLocaleTimeString('es-CO'), 
+                latitud: latitud.toString(), 
+                longitud: longitud.toString(), 
+                precisionGPS: precisionGPS.toString(), 
+                linkMapa: 'https://www.google.com/maps?q='+latitud+','+longitud, 
+                foto: fotoBase64 
+            };
             try { await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(datos) }); document.getElementById('loadingOverlay').style.display = 'none'; document.getElementById('formSection').style.display = 'none'; document.getElementById('successMessage').style.display = 'block'; }
             catch (error) { document.getElementById('loadingOverlay').style.display = 'none'; document.getElementById('btnSubmit').disabled = false; alert('Error al enviar'); }
         });
+        
         function nuevoRegistro() { document.getElementById('rutaCobroForm').reset(); document.getElementById('photoPreview').style.display = 'none'; document.getElementById('photoStatus').textContent = ''; document.querySelector('.photo-upload .icon').textContent = '📷'; document.querySelector('.photo-upload p').textContent = 'Toca para tomar foto'; document.getElementById('successMessage').style.display = 'none'; document.getElementById('formSection').style.display = 'block'; document.getElementById('btnSubmit').disabled = false; fotoBase64 = ''; inicializarFormulario(); }
         verificarDia();
     </script>
