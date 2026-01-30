@@ -36,10 +36,8 @@
         .gps-status.loading { color: #f39c12; }
         .gps-status.success { color: #27ae60; background: #d5f4e6; }
         .gps-status.error { color: #e74c3c; background: #fdeaea; }
-        .gps-coords { font-size: 0.85em; color: #636e72; margin-top: 5px; }
         .btn-submit { width: 100%; padding: 15px; background: linear-gradient(135deg, #4a1fa0 0%, #6b3fa0 100%); color: #ffd700; border: none; border-radius: 10px; font-size: 1.1em; font-weight: 600; cursor: pointer; margin-top: 10px; }
         .btn-submit:disabled { background: #bdc3c7; cursor: not-allowed; }
-        .btn-gps { background: linear-gradient(135deg, #ffd700 0%, #ffb800 100%); color: #4a1fa0; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 10px; }
         .success-message { display: none; text-align: center; padding: 40px; }
         .success-message .checkmark { font-size: 4em; color: #27ae60; margin-bottom: 20px; }
         .blocked-message { display: none; text-align: center; padding: 40px; }
@@ -75,7 +73,7 @@
                 <div class="form-group"><label>Hora de visita <span class="required">*</span></label><input type="time" id="horaVisita" required></div>
                 <div class="form-group"><label>Fecha de visita <span class="required">*</span></label><input type="date" id="fechaVisita" required></div>
                 <div class="form-group"><label>Contacto del cliente <span class="required">*</span></label><input type="tel" id="contacto" required placeholder="Teléfono"></div>
-                <div class="form-group"><label>📍 Ubicación GPS <span class="required">*</span></label><div class="gps-status loading" id="gpsStatus"><span>🔄</span><span>Obteniendo ubicación...</span></div><div class="gps-coords" id="gpsCoords"></div><button type="button" class="btn-gps" onclick="obtenerUbicacion()">🔄 Actualizar</button></div>
+                <div class="form-group"><label>📍 Ubicación GPS <span class="required">*</span></label><div class="gps-status loading" id="gpsStatus"><span>🔄</span><span>Obteniendo ubicación...</span></div></div>
                 <button type="submit" class="btn-submit" id="btnSubmit">✅ Enviar Registro</button>
             </form>
         </div>
@@ -99,13 +97,13 @@
             obtenerUbicacion();
         }
         function obtenerUbicacion() {
-            const statusDiv = document.getElementById('gpsStatus'), coordsDiv = document.getElementById('gpsCoords');
+            const statusDiv = document.getElementById('gpsStatus');
             statusDiv.className = 'gps-status loading';
             statusDiv.innerHTML = '<span>🔄</span><span>Obteniendo ubicación...</span>';
             if (!navigator.geolocation) { statusDiv.className = 'gps-status error'; statusDiv.innerHTML = '<span>❌</span><span>GPS no soportado</span>'; return; }
             navigator.geolocation.getCurrentPosition(
-                function(pos) { latitud = pos.coords.latitude; longitud = pos.coords.longitude; precisionGPS = pos.coords.accuracy; statusDiv.className = 'gps-status success'; statusDiv.innerHTML = '<span>✅</span><span>Ubicación obtenida</span>'; coordsDiv.innerHTML = '<a href="https://www.google.com/maps?q='+latitud+','+longitud+'" target="_blank" style="color:#6b3fa0;">📍 Ver en Maps</a>'; ubicacionObtenida = true; },
-                function() { statusDiv.className = 'gps-status error'; statusDiv.innerHTML = '<span>❌</span><span>Error GPS</span>'; ubicacionObtenida = false; },
+                function(pos) { latitud = pos.coords.latitude; longitud = pos.coords.longitude; precisionGPS = pos.coords.accuracy; statusDiv.className = 'gps-status success'; statusDiv.innerHTML = '<span>✅</span><span>Ubicación obtenida</span>'; ubicacionObtenida = true; },
+                function() { statusDiv.className = 'gps-status error'; statusDiv.innerHTML = '<span>❌</span><span>Activa el GPS para continuar</span>'; ubicacionObtenida = false; },
                 { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
             );
         }
@@ -120,7 +118,7 @@
         });
         document.getElementById('rutaCobroForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            if (!ubicacionObtenida) { alert('Activa el GPS'); obtenerUbicacion(); return; }
+            if (!ubicacionObtenida) { alert('Debes activar el GPS para enviar el registro'); obtenerUbicacion(); return; }
             if (!fotoBase64) { alert('Adjunta una foto'); return; }
             document.getElementById('loadingOverlay').style.display = 'flex';
             document.getElementById('btnSubmit').disabled = true;
